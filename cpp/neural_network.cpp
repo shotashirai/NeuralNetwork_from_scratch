@@ -3,7 +3,8 @@ using namespace std;
 #include <iomanip>
 #include <string.h>
 #include <math.h>
-
+#include <stdio.h>
+#include <time.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template < typename F > struct 
@@ -299,7 +300,7 @@ softmax( const vMatrix< F >& p ) {
 }
 template    < typename F >  void
 softmax_txt() {
-    cout << "3.5.2 softmax" << endl;
+    cout << "softmax" << endl;
     cout << softmax( MakeMatrix< F, 1, 3 >( { 1010, 1000, 990 } ) );
 }
 
@@ -467,16 +468,32 @@ CountEquals( const vArray< F >& L, const vArray< F >& R ) {
 void
 mnist_batch() {
     cout << "MNIST BATCH" << endl;
+    clock_t start_get = clock();
     auto w = get_data< double >();
     auto x_test = w.at( "x_test" );
     auto t_test = w.at( "t_test" )[ 0 ];
+    clock_t end_get = clock();
+    const double time_get = static_cast<double>(end_get - start_get) / CLOCKS_PER_SEC * 1000.0;
+    printf("Elapsed time (import data) %lf[ms]\n", time_get);
+
+    clock_t start_net = clock();
     auto network = init_network();
+    clock_t end_net = clock();
+    const double time_net = static_cast<double>(end_net - start_net) / CLOCKS_PER_SEC * 1000.0;
+    printf("Elapsed time (network initialization) %lf[ms]\n", time_net);
+
+    clock_t start_pre = clock();
     auto accuracy_cnt = 0;
-    for ( size_t i = 0; i < x_test.h; i += 100 ) {
+    int  batch_size = 100;
+    for ( size_t i = 0; i < x_test.h; i += batch_size ) {
         auto y = predict( network, Part( x_test, i, 0, 100, x_test.w ) );
         auto p = argmax( y );
         accuracy_cnt += CountEquals( p, Part( t_test, i, 100 ) );
     }
+    clock_t end_pre = clock();
+    const double time_pre = static_cast<double>(end_pre - start_pre) / CLOCKS_PER_SEC * 1000.0;
+    printf("Elapsed time (prediction) %lf[ms]\n", time_pre);
+
     cout << "accuracy_cnt: " << ( ( double)accuracy_cnt / (double)x_test.h ) << endl;
 }
 
@@ -490,7 +507,11 @@ Main() {
     softmax_primitive_txt< F >();
     sum_softmax< F >();
     mnist();
+    clock_t start = clock();
     mnist_batch();
+    clock_t end = clock();
+    const double time = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000.0;
+    printf("Total elapsed time %lf[ms]\n", time);
 }
 int
 main( int argc, char* argv[] ) {
