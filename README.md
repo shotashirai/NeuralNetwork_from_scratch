@@ -1,8 +1,16 @@
 # Neural Network from scratch
-Neural networks from scratch using python and C++ without using existing machine learning libraries. (Python uses Numpy library for calculations)
+Neural networks from scratch in Python, C++ and CUDA without using existing machine learning libraries. (Python uses Numpy library for calculations). While a variety of machine learning libraries are avalilable, especially in Python, C/C++ is still used in high performance computiong (HPC). CUDA is used for GPGPU (general purpose computing on graphic processing unit) computing. This project aims to build neural network from scratch.
 
 ## Network structure
 The network has three hidden layers. The signal propagates forward. Sigmoid function (hidden layers) and softmax function (output layer) are used as activation functions. In this project, the trained weight was used to initialize the network.
 
 ## Implement image recognition task
-MNIST dataset was used for handwritten digit recognition tasks. The networks classified 10,000 test images with an accuracy of 93.5%. Compared to Python, C++ achieved 10 times faster processing time.
+MNIST dataset was used for handwritten digit recognition tasks. The networks classified 10,000 test images with an accuracy of 93.5%. Compared to C++ code (CPU processing), CUDA (GPU processing) achieved ~50 times faster processing time.
+
+## Environmental Configuraltion
+OS: Ubuntu 18.04 LTS  
+CPU: Intel Core i7-3770k 3.50GHz  
+RAM: 32GB  
+GPU: NVIDIA Geforce GTX1060 6GB  
+CUDA 10.2
+
